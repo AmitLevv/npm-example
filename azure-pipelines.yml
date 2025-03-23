@@ -20,7 +20,7 @@ steps:
 - task: JFrogNpm@1
   inputs:
     command: 'install'
-    artifactoryConnection: 'JFrog Artifactory V2'
+    artifactoryConnection: 'amitl'
     sourceRepo: 'amitl-npm'
     collectBuildInfo: true
     threads: '1'
