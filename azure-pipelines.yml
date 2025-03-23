@@ -26,11 +26,21 @@ steps:
     threads: '1'
     buildName: '$(Build.DefinitionName)'
     buildNumber: '$(Build.BuildNumber)'
-
-- task: JfrogCliV2@1
+- task: JFrogNpm@1
   inputs:
-    command: 'jf npm publish --build-name $(Build.DefinitionName) --build-number $(Build.BuildNumber)'
-- task: JfrogCliV2@1
+    command: 'pack and publish'
+    artifactoryConnection: 'amitl'
+    targetRepo: 'amitl-npm'
+    collectBuildInfo: true
+    buildName: '$(Build.DefinitionName)'
+    buildNumber: '$(Build.BuildNumber)'
+- task: JFrogBuildPromotion@1
   inputs:
-    jfrogPlatformConnection: 'amitlAzureDev'
-    command: 'jf rt bp $(Build.DefinitionName) $(Build.BuildNumber)'
+    artifactoryConnection: 'amitl'
+    buildName: '$(Build.DefinitionName)'
+    buildNumber: '$(Build.BuildNumber)'
+    targetRepo: 'amitl-npm'
+    status: 'Released'
+    includeDependencies: true
+    copy: false
+    dryRun: false
