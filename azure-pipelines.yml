@@ -34,13 +34,8 @@ steps:
     collectBuildInfo: true
     buildName: '$(Build.DefinitionName)'
     buildNumber: '$(Build.BuildNumber)'
-- task: JFrogBuildPromotion@1
+
+- task: JfrogCliV2@1
   inputs:
-    artifactoryConnection: 'amitl'
-    buildName: '$(Build.DefinitionName)'
-    buildNumber: '$(Build.BuildNumber)'
-    targetRepo: 'amitl-npm'
-    status: 'Released'
-    includeDependencies: true
-    copy: false
-    dryRun: false
+    jfrogPlatformConnection: 'amitlAzureDev'
+    command: 'jf rt bp $(Build.DefinitionName) $(Build.BuildNumber)'
