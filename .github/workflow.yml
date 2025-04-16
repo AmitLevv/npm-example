@@ -1,0 +1,23 @@
+name: RT IPLOAD
+'on':
+  push:
+    branches:
+      - '*'
+jobs:
+  auth:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup JFrog CLI
+        uses: jfrog/setup-jfrog-cli@v4
+        env:
+          JF_URL: https://idani.jfrog.io
+        with:
+          oidc-provider-name: amitl
+          oidc-audience: amitl
+      - name: Upload
+        run: |
+          echo "test file " > test.txt
+          jf rt upload "test.txt" "ronma-generic-local"
