@@ -1,4 +1,4 @@
-name: RT IPLOAD
+name: Setup JFrog CLI Example
 'on':
   push:
     branches:
@@ -9,6 +9,9 @@ jobs:
       contents: read
       id-token: write
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./packag
     steps:
       - name: Setup JFrog CLI
         uses: jfrog/setup-jfrog-cli@v4
@@ -17,7 +20,23 @@ jobs:
         with:
           oidc-provider-name: amitl
           oidc-audience: amitl
-      - name: Upload
+      - name: Set CLI Config
+        run: jf npm-config --global=true --repo-resolve=amitl-npm --repo-deploy=amitl-npm
+           
+      - name: Install Dependencies
+        run: jf npm install
+           
+      - name: Run tests
+        run: npm test
+         
+      - name: Publish
+        run: jf npm publish
+         
+      - name: Publish Build info With JFrog CLI
         run: |
-          echo "test file " > test.txt
-          jf rt upload "test.txt" "ronma-generic-local"
+         # Collect environment variables for the build
+         jf rt build-collect-env
+         # Collect VCS details from git and add them to the build
+         jf rt build-add-git
+         # Publish build info
+         jf rt build-publish
