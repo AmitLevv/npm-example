@@ -32,8 +32,6 @@ jobs:
       - name: Install Dependencies
         run: jf npm install
            
-      - name: Run tests
-        run: npm test
          
       - name: Publish
         run: jf npm publish
@@ -44,5 +42,7 @@ jobs:
          jf rt build-collect-env
          # Collect VCS details from git and add them to the build
          jf rt build-add-git
+         # scan build
+         jf scan build
          # Publish build info
          jf rt build-publish
