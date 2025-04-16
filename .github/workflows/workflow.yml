@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-node@v3
       
       - name: Setup JFrog CLI
-        uses: jfrog/setup-jfrog-cli@v4
+        uses: jfrog/setup-jfrog-cli@v4.5.6
         env:
           JF_URL: https://idani.jfrog.io
         with:
@@ -31,6 +31,16 @@ jobs:
            
       - name: Install Dependencies
         run: jf npm install
+        
+      - name: JF | XRay Scan Files
+        run: | 
+         jf scan . --recursive --extended-table=true --format=sarif --fail=${{ inputs.JFROG_FAIL_ON_SCAN }} > jfrog_scan.sarif
+         ls -ll
+
+      - name: JF | XRay Security Audit (SCA, SAST, Secrets)
+        run: | 
+         jf audit --sca --sast --secrets --extended-table -
+         ls -ll
            
          
       - name: Publish
