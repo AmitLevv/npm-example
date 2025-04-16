@@ -47,7 +47,7 @@ jobs:
 
 
       - name: SARIF | Upload SARIF as Artifact
-        uses: actions/upload-artifact@v4.5.6
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: ${{ inputs.JFROG_PROJECT_KEY }}-${{ github.run_number }}-sarif
           path: |
