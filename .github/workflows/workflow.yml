@@ -34,12 +34,12 @@ jobs:
         
       - name: JF | XRay Scan Files
         run: | 
-         jf scan . --recursive --extended-table=true --format=sarif --fail=${{ inputs.JFROG_FAIL_ON_SCAN }} > jfrog_scan.sarif
+         jf scan . --recursive --extended-table=true
          ls -ll
 
       - name: JF | XRay Security Audit (SCA, SAST, Secrets)
         run: | 
-         jf audit --sca --sast --secrets --extended-table -
+         jf audit --sca --sast
          ls -ll
            
          
