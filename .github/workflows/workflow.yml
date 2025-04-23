@@ -35,20 +35,16 @@ jobs:
         run: jf npm-config --global=true --repo-resolve=amitl-npm --repo-deploy=amitl-npm
            
       - name: Install Dependencies
-        run: jf npm install
-        
-      - name: JF | XRay Scan Files
-        run: | 
-         jf build scan . 
-         ls -ll
-
-      - name: JF | XRay Security Audit (SCA, SAST, Secrets)
-        run: | 
-         jf audit 
-         ls -ll
-
+        run: jf npm install -build-name "Setup JFrog CLI Example" --build-number 25
          
       - name: Publish
-        run: jf npm publish
-         
+        run: jf npm publish -build-name "Setup JFrog CLI Example" --build-number 25
+
+      - name: Publish2
+        run: jf rt bp "Setup JFrog CLI Example" 25
+
+      - name: JF | XRay Scan Files
+        run: | 
+         jf build scan "Setup JFrog CLI Example" 25
+         ls -ll
    
