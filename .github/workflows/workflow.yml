@@ -39,7 +39,7 @@ jobs:
         
       - name: JF | XRay Scan Files
         run: | 
-         jf scan . 
+         jf build scan . 
          ls -ll
 
       - name: JF | XRay Security Audit (SCA, SAST, Secrets)
