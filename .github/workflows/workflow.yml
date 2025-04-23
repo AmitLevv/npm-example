@@ -35,7 +35,7 @@ jobs:
         run: jf npm-config --global=true --repo-resolve=amitl-npm --repo-deploy=amitl-npm
            
       - name: Install Dependencies
-        run: jf npm install -build-name amit --build-number 26
+        run: jf npm install 
          
       - name: Publish
         run: jf npm publish -build-name amit --build-number 26
