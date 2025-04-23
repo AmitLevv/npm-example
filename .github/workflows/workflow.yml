@@ -45,6 +45,6 @@ jobs:
 
       - name: JF | XRay Scan Files
         run: | 
-         jf build scan amit 25
+         jf bs amit 25
          ls -ll
    
