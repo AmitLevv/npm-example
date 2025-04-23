@@ -40,6 +40,6 @@ jobs:
 
       - name: JF | XRay Scan Files
         run: | 
-         jf bs 'Setup JFrog CLI Example' 29
+         jf scan . --recursive
          ls -ll
    
