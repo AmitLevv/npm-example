@@ -1,3 +1,4 @@
+
 name: Setup JFrog CLI Example
 on: push
 
@@ -15,6 +16,12 @@ jobs:
       run:
         working-directory: ./package
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+              
+      - name: Setup Node npm
+        uses: actions/setup-node@v3
+      
       - name: Setup JFrog CLI
         uses: jfrog/setup-jfrog-cli@v4.5.6
         env:
@@ -33,6 +40,6 @@ jobs:
 
       - name: JF | XRay Scan Files
         run: | 
-         jf scan .
+         jf scan ..
          ls -ll
    
