@@ -35,16 +35,16 @@ jobs:
         run: jf npm-config --global=true --repo-resolve=amitl-npm --repo-deploy=amitl-npm
            
       - name: Install Dependencies
-        run: jf npm install 
+        run: jf npm install  -build-name amit --build-number 27
          
       - name: Publish
-        run: jf npm publish -build-name amit --build-number 26
+        run: jf npm publish -build-name amit --build-number 27
 
       - name: Publish2
-        run: jf rt bp amit 26
+        run: jf rt bp amit 27
 
       - name: JF | XRay Scan Files
         run: | 
-         jf bs amit 26
+         jf bs amit 27
          ls -ll
    
