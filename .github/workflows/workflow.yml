@@ -44,4 +44,7 @@ jobs:
          ls -ll
       - name: JF | XRay Scan Files
         run: | 
-         docker images 
+         docker pull flask-app:latest
+         jf docker scan flask-app:latest
+
+
