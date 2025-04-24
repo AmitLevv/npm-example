@@ -44,7 +44,7 @@ jobs:
          ls -ll
       - name: JF | XRay Scan Files
         run: | 
-         docker login -uamitl idani.jfrog.io
+         docker login -uamitl idani.jfrog.io  --password 'Password12!@1'
          docker pull flask-app:latest
          jf docker scan flask-app:latest
 
