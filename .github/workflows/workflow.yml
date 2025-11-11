@@ -38,12 +38,9 @@ jobs:
       - name: Install Dependencies
         run: jf npm install  
 
-      - name: JF | XRay Scan Files
-        run: | 
-         jf scan . --recursive
-         ls -ll
-      - name: JF | XRay Scan Files
-        run: | 
-         jf bs 'Setup JFrog CLI Example' 36
-
+      - name: JF | XRay report Files
+        run: |
+          jf xr cl '/api/v1/reports/vulnerabilities' \
+          --header 'Content-Type: application/json' \
+          --data '{ "name": "report124", "resources": { "repositories": [ { "name": "libs-release-local" } ] } }'
 
