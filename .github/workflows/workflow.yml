@@ -1,46 +1,37 @@
+name: "Frogbot Security Scan"
 
-name: Setup JFrog CLI Example
-on: push
+on:
+  pull_request_target: 
+    types: [opened, synchronize] # Triggers scan-pr flow for every opened/updated pull request
+  push: # Triggers scan-repo flow for every push to the specified branches
+    branches:
+      - main
+  schedule:
+    - cron: "0 0 * * *"   # The repository will be scanned once a day at 00:00 GMT.
+  workflow_dispatch: # The repository will be scanned on demand
 
-# This is required as per
-# https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-cloud-providers#adding-permissions-settings
 permissions:
-  id-token: write
-jobs:
-  auth:
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: self-hosted
-    defaults:
-      run:
-        working-directory: ./package
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-              
-      - name: Setup Node npm
-        uses: actions/setup-node@v3
-      
-      - name: Setup JFrog CLI
-        uses: jfrog/setup-jfrog-cli@v4.5.6
-        env:
-          JF_URL: https://idani.jfrog.io
-          JF_GIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          JFROG_CLI_LOG_LEVEL: DEBUG
+  pull-requests: write
+  contents: write
+  security-events: write
+  # [Mandatory If using OIDC authentication protocol instead of JF_ACCESS_TOKEN]
+  # id-token: write
 
+jobs:
+  frogbot-scan:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        # The repository scanning will be triggered periodically on the following branches.
+        branch: ["main"]
+    steps:
+      - uses: jfrog/frogbot@v2
+        # [Mandatory if using OIDC authentication protocol instead of JF_ACCESS_TOKEN]
+        # Insert to oidc-provider-name the 'Provider Name' defined in the OIDC integration configured in the JPD
         with:
           oidc-provider-name: amitl
           oidc-audience: amitl
-      - name: Set CLI Config
-        run: jf npm-config --global=true --repo-resolve=amitl-npm --repo-deploy=amitl-npm
-           
-      - name: Install Dependencies
-        run: jf npm install  
-
-      - name: JF | XRay report Files
-        run: |
-          jf xr cl '/api/v1/reports/vulnerabilities' \
-          --header 'Content-Type: application/json' \
-          --data '{ "name": "report124", "resources": { "repositories": [ { "name": "libs-release-local" } ] } }'
-
+        env:
+          JF_URL: https://idani.jfrog.io
+          JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
+          #JF_GIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
