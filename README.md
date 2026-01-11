@@ -1,79 +1,77 @@
-# NPM Example
+# Pip Example
 
 ## Overview
+This example demonstrates how to build a Python Pip project with Artifactory, while collecting build-info.
 
-Artifactory provides full support for managing npm packages and ensures optimal and reliable access to npmjs.org. It also allows aggregating multiple npm registries under a virtual repository Artifactory, which provides access to all your npm packages through a single URL for both upload and download.
+## Before Running the Example
+### Set Up the Environment 
+1. Make sure **Python** is installed and the **python** command is in your PATH.
+2. Install **pip**. You can use the [Pip Documentation](https://pip.pypa.io/en/stable/installing/) and also [Installing packages using pip and virtual environments](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
+3. Create three Pypi repositories in Artifactory - a local, remote and a virtual repository. You can use the [PyPi Repositories Documentation](https://www.jfrog.com/confluence/display/RTF/PyPI+Repositories).
+* The remote repository should proxy *https://files.pythonhosted.org* (the default when creating a Pypi remote repository). 
+* Name the virtual repository *pypi*.
+* The virtual repository should include the remote repository.
+* The virtual repository should have the local repository set as the *Default Deployment Repository*.
+4. Make sure **wheel** and **setuptools** are installed. You can use the [Installing Packages Documentation](https://packaging.python.org/tutorials/installing-packages/).
+5. Make sure version 1.28.0 or above of [JFrog CLI](https://jfrog.com/getcli/) is installed.
 
-You may store exhaustive build information in Aratifactory by running your npm builds with [JFrog CLI](https://www.jfrog.com/confluence/display/CLI/JFrog+CLI).
-JFrog CLI collects build-info from your build agents and then publishes it to Artifactory. Once published, the build info can be viewed in the Build Browser under Builds.
-For more details on npm build integration using JFrog CLI, please refer to [Building npm Packages](https://www.jfrog.com/confluence/display/CLI/CLI+for+JFrog+Artifactory#CLIforJFrogArtifactory-BuildingNpmPackagesUsingtheNpmClient) in the JFrog CLI User Guide.
+### Validate the Setup
+In your terminal, validate that the following commands work.
+```console
+Output Python version:
+> python --version
 
-## This Example
+Output pip version:
+> pip --version
 
-This example demonstrates how to build a npm project using JFrog CLI. The build does the following:
+Verify wheel is installed:
+> wheel -h
 
-1. Downloads its npm dependencies from Artifactory.
-2. Packs and uploads the built package to Artifactory.
-3. Records and publishes build-info to Artifactory.
+Verify setuptools is installed:
+> pip show setuptools
 
-# Prerequisite
+Verify that virtual-environment is activated:
+> echo $VIRTUAL_ENV
 
-1. Make sure your local machine has _npm_ version 5.4.0 or above installed and that _npm_ is included in the PATH. To verify this, run `npm -v`.
-2. Make sure your local machine has the latest version of [JFrog CLI](https://jfrog.com/getcli/).
-3. Make sure you're using a non-OSS JFrog Artifactory with version 5.5.2 or above.
+Output JFrog CLI version:
+> jf --version
+```
 
-# Creating Repositories
+## Running the Example
+'cd' to the root project directory
 
-Create the following repositories on your Artifactory instance:
-
-1. A remote npm repository. Make sure the repository has *https://registry.npmjs.org* configured as its URL (this is the default when creating the repository).
-2. A local npm repository.
-3. A virtual repository:
-   - Include the remote and local repositories as part of the new virtual repository.
-   - Set the new local repository as the **Default Deployment Repository** of the new virtual repository.
-
-# Running the Example
-
-'cd' to the root project directory.
-
+```console
 Configure Artifactory:
+> jf c add --url=<JFROG_PLATFORM_URL> [credentials flags]
 
-```
-jf c add --url=<JFROG_PLATFORM_URL> [credentials flags]
-```
+Configure the project's resolution repository. You shoud set the virtual repository you created.
+> jf pip-config --repo-resolve=<PYPI_REPO>
 
-Configure the npm project and select the virtual repository as the resolution and deployment repository:
+Install project dependencies with pip from Artifactory:
 
-```
-jf npm-config --repo-resolve=<NPM_RESOLVE_REPO> --repo-deploy=<NPM_DEPLOY_REPO>
-```
+Using Setup.py:
+> jf pip install . --build-name=my-pip-build --build-number=1 --module=jfrog-python-example
+ OR
+Using requirements.txt:
+> jf pip install -r requirements.txt --build-name=my-pip-build --build-number=1 --module=jfrog-python-example
 
-Build the project and record the dependencies as part of the build-info:
+Package the project, create distribution archives (tar.gz and whl):
+> python setup.py sdist bdist_wheel
 
-```
-jf npm install --build-name my-npm-build --build-number 1
-```
+Upload the packages to the pypi repository in Artifactory:
+> jf rt u dist/ pypi/ --build-name=my-pip-build --build-number=1 --module=jfrog-python-example
 
-Add environment variables to the build-info.
-
-```
-jf rt bce my-npm-build 1
-```
-
-Add git information to the build-info.
-
-```
-jf rt bag my-npm-build 1
-```
-
-Pack and publish the npm package to Artifactory, while recording it as an artifact in the build-info:
-
-```
-jf npm publish --build-name my-npm-build --build-number 1
-```
+Collect environment variables and add them to the build info:
+> jf rt bce my-pip-build 1
 
 Publish the build info to Artifactory:
+> jf rt bp my-pip-build 1
 
+Install published package by installing it from Artifactory using pip:
+> jf pip install jfrog-python-example
+
+Validate package successfully installed:
+> pip show jfrog-python-example
 ```
-jf rt bp my-npm-build 1
-```
+
+Learn about [Building Python Packages with JFrog CLI](https://www.jfrog.com/confluence/display/CLI/CLI+for+JFrog+Artifactory#CLIforJFrogArtifactory-BuildingPythonPackages).
