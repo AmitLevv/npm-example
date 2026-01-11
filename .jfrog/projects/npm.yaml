@@ -1,0 +1,8 @@
+version: 1
+type: npm
+resolver:
+    repo: amitl-npm
+    serverId: idani
+deployer:
+    repo: amitl-npm
+    serverId: idani
