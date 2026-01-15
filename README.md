@@ -3,7 +3,7 @@
 ## Overview
 This example demonstrates how to build a Python Pip project with Artifactory, while collecting build-info.
 
-## Before Running the Example
+## Before Running tahe Example
 ### Set Up the Environment 
 1. Make sure **Python** is installed and the **python** command is in your PATH.
 2. Install **pip**. You can use the [Pip Documentation](https://pip.pypa.io/en/stable/installing/) and also [Installing packages using pip and virtual environments](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
